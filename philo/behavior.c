@@ -30,6 +30,9 @@ void	print(int philo, char *status_str)
 /*	philo 왼 -> 오 */
 void	eating(int philo, t_philo *status)
 {
+	int		i;
+	long	time;
+
 	if (philo == 1)
 		pthread_mutex_lock(&g_info.fork[g_info.philo - 1]);
 	else
@@ -40,7 +43,10 @@ void	eating(int philo, t_philo *status)
 	pthread_mutex_lock(&status->mutex);
 	print(philo, "is eating");
 	g_info.last_eat[philo - 1] = calc_time(0);
-	usleep(1000 * g_info.eat_time);
+	i = -1;
+	time = calc_time(0);
+	while (!g_info.philo_die && calc_time(time) <= g_info.eat_time)
+		usleep(50);
 	status->cnt_eat++;
 	pthread_mutex_unlock(&status->mutex);
 	pthread_mutex_unlock(&g_info.fork[philo - 1]);
@@ -52,12 +58,17 @@ void	eating(int philo, t_philo *status)
 
 void	sleeping(int philo)
 {
+	int		i;
+	long	time;
+
 	print(philo, "is sleeping");
-	usleep(1000 * g_info.sleep_time);
+	i = -1;
+	time = calc_time(0);
+	while (!g_info.philo_die && calc_time(time) <= g_info.sleep_time)
+		usleep(50);
 }
 
 void	thinking(int philo)
 {
 	print(philo, "is thinking");
-	usleep(200);
 }
